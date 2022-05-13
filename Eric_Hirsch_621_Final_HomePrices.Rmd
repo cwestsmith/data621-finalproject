@@ -28,9 +28,12 @@ library(MASS)
 library(broom)
 ```
 
+\doublespacing
+
 ## *Introduction*
 
-In this paper we analyze housing prices by comparing three prediction methodologies: OLS, Ridge regression, and Random Forest. The purpose is to compare the methodologies and draw conclusions about which are most effective and why. Regression alone is not necessarily the optimal strategy for predicting housing prices.^[1]  However, when data sets and/or analysis resources are limited, regression can perform adequately.
+In this paper we analyze housing prices by comparing three prediction methodologies: OLS, Ridge regression, and Random Forest. The purpose is to compare the methodologies and draw conclusions about which are most effective and why. Regression alone is not necessarily the optimal strategy for predicting housing prices.^[1 Prediction of China's Housing Price Based on a Novel Grey Seasonal Model, Li et al.  Mathematical Models in Engineering, 
+https://www.hindawi.com/journals/mpe/2021/5541233/]  However, when data sets and/or analysis resources are limited, regression can perform adequately.
 
 ## *Background and Literature Review*
 
