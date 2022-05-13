@@ -28,7 +28,9 @@ library(MASS)
 library(broom)
 ```
 
-\doublespacing
+## *Abstract*
+
+Being able to accurately predict housing prices is critical to many industries. Recently, analysts have attempted to improve price prediction with enhanced statistical techniques.  In this paper, we take a more comparative approach, examining 4 standard regression techniques (OLS, ridge lasso, and elastic net) to assess the best performance.  We used a kaggle dataset (https://www.kaggle.com/c/house-prices-advanced-regression-techniques) in order to test the performance of the model.  We found Lasso to be the best predictor, which we speculate is because the dataset has a high number of predictors relative to the number of observations. 
 
 ## *Introduction*
 
@@ -289,6 +291,114 @@ write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsRidge2.csv")
 ```
 
 Ridge regression performs the best, with a score of .14047.  This puts us at 1690 out of 4216 individuals.
+
+#### C. Lasso Regression
+
+##### Lasso Regression with Unscaled Data
+
+First we define the predictor and response variables for the training dataset.
+```{r}
+y_train <- dfTrain6$SalePrice
+x_train <- data.matrix(dfTrain6[, names(dfTrain6) != "SalePrice"])
+```
+
+Similarly to the Ridge model, we'll use the `glmnet` library, which makes it easy to use k-fold cross-validation to find the optimal value for lambda.
+```{r}
+lasso_cv <- cv.glmnet(x_train, y_train, alpha = 1)
+
+lasso_lambda <- lasso_cv$lambda.min; lasso_lambda
+```
+Next, we find the coefficients for the Lasso model using our optimized lambda.
+
+```{r}
+optimized_lasso <- glmnet(x_train, y_train, alpha = 1, lambda = lasso_lambda)
+```
+
+Lastly, we predict new values using our optimized Lasso model.
+
+```{r}
+lasso_testdata <- data.matrix(dfTest6)
+```
+
+```{r}
+y_pred_lasso <- predict(optimized_lasso, s = lasso_lambda, newx = lasso_testdata)
+y_pred_lasso <- data.frame(as.vector(y_pred_lasso))
+y_pred_lasso$Id <- dfTest6$Id
+y_pred_lasso[,c(1,2)] <- y_pred_lasso[,c(2,1)]
+colnames(y_pred_lasso) <- c("Id", "SalePrice")
+#y_pred_lasso[is.na(y_pred_lasso)] <- log(mean(home_sales$SalePrice))
+y_pred_lasso$SalePrice <- exp(y_pred_lasso$SalePrice)
+```
+```{r}
+write.csv(y_pred_lasso, "C:\\Users\\carli\\OneDrive\\Documents\\621\\LassoPredictions.csv")
+```
+
+##### Lasso Regression with Scaled Data
+
+```{r}
+scaled_training <- data.matrix(df7b)
+```
+
+
+```{r}
+scaled_lasso <- cv.glmnet(scaled_training, y_train, alpha = 1)
+
+```
+```{r}
+lasso_scaledlambda <- scaled_lasso$lambda.min; lasso_scaledlambda
+optimizedscaled_lasso <- glmnet(scaled_training, y_train, alpha = 1, lambda = lasso_scaledlambda)
+
+
+```
+```{r}
+xSub <- data.matrix(dfSubmit7a)
+```
+```{r}
+y_pred_lasso2 <- predict(optimizedscaled_lasso, s = lasso_scaledlambda, newx = xSub)
+y_pred_lasso2 <- data.frame(as.vector(y_pred_lasso2))
+y_pred_lasso2$Id <- dfTest6$Id
+y_pred_lasso2[,c(1,2)] <- y_pred_lasso2[,c(2,1)]
+colnames(y_pred_lasso2) <- c("Id", "SalePrice")
+#y_pred_lasso[is.na(y_pred_lasso)] <- log(mean(home_sales$SalePrice))
+y_pred_lasso2$SalePrice <- exp(y_pred_lasso2$SalePrice)
+```
+```{r}
+write.csv(y_pred_lasso2, "C:\\Users\\carli\\OneDrive\\Documents\\621\\LassoPredictions2.csv")
+```
+
+#### D. Elastic Net Regression
+```{r}
+library(caret)
+library(dplyr)
+```
+First, build a control model.
+```{r}
+control <- trainControl(method = "repeatedcv", number = 5, repeats = 5, search = "random", verboseIter = TRUE)
+```
+Next, train the elastic net regression model.
+```{r}
+enet <- train(SalePrice ~ ., data = dfTrain6, method = "glmnet", preProcess = c("center", "scale"), tuneLength = 25, trControl = control)
+```
+Optimizing the elastic net model based on tuning parameters selected from model training.
+```{r}
+optimized_enet <- glmnet(scaled_training, y_train, alpha = .162, lambda = 0.0289)
+```
+
+```{r}
+y_pred_enet <- predict(optimized_enet, xSub)
+y_pred_enet <- data.frame(as.vector(y_pred_enet))
+y_pred_enet$Id <- dfTest6$Id
+y_pred_enet[,c(1,2)] <- y_pred_enet[,c(2,1)]
+colnames(y_pred_enet) <- c("Id", "SalePrice")
+#y_pred_lasso[is.na(y_pred_lasso)] <- log(mean(home_sales$SalePrice))
+y_pred_enet$SalePrice <- exp(y_pred_enet$SalePrice)
+```
+```{r}
+write.csv(y_pred_enet, "C:\\Users\\carli\\OneDrive\\Documents\\621\\ElasticNetPredictions.csv")
+```
+
+
+
 
 
 New code goes here:
