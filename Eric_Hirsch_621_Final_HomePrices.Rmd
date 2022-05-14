@@ -407,7 +407,7 @@ Our elastic net result falls between ridge and lasso.
 
 ## *Discussion and Conclusions*
 
-Ordinary Least Squares is a regression technique with a long history of use as a predictive model. However, standard measures of fit (like R^2) will always increase (or stay the same) as you add independent variables.  This can result in models which incorporate noise - in other words, overfit the data so that idiosyncrasies in the training set effect predictions in the test set.  Other methods of measuring fit, such as adjusted R^2 and AIC, help mitigate the overfitting effect by penalizing the addition of factors.
+Ordinary Least Squares is a regression technique with a long history of use as a predictive model. However, standard measures of fit (like R^2) will always increase (or stay the same) as you add independent variables.  This can result in models which incorporate noise - in other words, overfit the data so that idiosyncrasies in the training set affect predictions in the test set.  Other methods of measuring fit, such as adjusted R^2 and AIC, help mitigate the overfitting effect by penalizing the addition of factors.
 
 More recently, other techniques which employ regularization have been introduced to deal with overfit.  For example, in ridge regression, we reduce the sum of our coefficients, not the number of variables.  We do this by introducing a penalty in the loss function represented by the squared sum of the coefficients themselves, multiplied by a factor (designated as lambda) which allows us to control the degree to which the size of the coefficients matters. If lambda is zero, there is no difference between ridge regression and OLS.
 
