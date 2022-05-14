@@ -206,9 +206,9 @@ We run a regression using the stepAIC algorithm to minimize AIC.
 
 ```{r}
 
-abc <- EHModel_Regression_StandardLM(dfTrain6, "SalePrice", splitRatio = 1, returnLM=TRUE)
-summary(abc)
-#abc <- lm(SalePrice ~ GrLivArea, dfTrain6)
+#abc <- EHModel_Regression_StandardLM(dfTrain6, "SalePrice", splitRatio = 1, returnLM=TRUE)
+#summary(abc)
+abc <- lm(SalePrice ~ GrLivArea, dfTrain6)
 
 ```
 
@@ -307,24 +307,24 @@ x_train <- data.matrix(dfTrain6[, names(dfTrain6) != "SalePrice"])
 ```
 
 Similarly to the Ridge model, we'll use the `glmnet` library, which makes it easy to use k-fold cross-validation to find the optimal value for lambda.
-```{r, ignore=FALSE}}
+```{r, include=FALSE}
 lasso_cv <- cv.glmnet(x_train, y_train, alpha = 1)
 
 lasso_lambda <- lasso_cv$lambda.min; lasso_lambda
 ```
 Next, we find the coefficients for the Lasso model using our optimized lambda.
 
-```{r, ignore=FALSE}}
+```{r, include=FALSE}
 optimized_lasso <- glmnet(x_train, y_train, alpha = 1, lambda = lasso_lambda)
 ```
 
 Lastly, we predict new values using our optimized Lasso model.
 
-```{r, ignore=FALSE}
+```{r, include=FALSE}
 lasso_testdata <- data.matrix(dfTest6)
 ```
 
-```{r, ignore=FALSE}
+```{r, include=FALSE}
 y_pred_lasso <- predict(optimized_lasso, s = lasso_lambda, newx = lasso_testdata)
 y_pred_lasso <- data.frame(as.vector(y_pred_lasso))
 y_pred_lasso$Id <- dfTest6$Id
