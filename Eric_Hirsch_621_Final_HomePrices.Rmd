@@ -207,8 +207,8 @@ We run a regression using the stepAIC algorithm to minimize AIC.
 ```{r}
 
 #abc <- EHModel_Regression_StandardLM(dfTrain6, "SalePrice", splitRatio = 1, returnLM=TRUE)
-#summary(abc)
 abc <- lm(SalePrice ~ GrLivArea, dfTrain6)
+summary(abc)
 
 ```
 
@@ -373,24 +373,24 @@ y_pred_lasso2$SalePrice <- exp(y_pred_lasso2$SalePrice)
 Our lasso regression gives us a .1375, which outperforms ridge.
 
 #### D. Elastic Net Regression
-```{r}
+```{r, include=FALSE}
 library(caret)
 library(dplyr)
 ```
 First, build a control model.
-```{r}
+```{r, include=FALSE}
 control <- trainControl(method = "repeatedcv", number = 5, repeats = 5, search = "random", verboseIter = TRUE)
 ```
 Next, train the elastic net regression model.
-```{r}
+```{r, include=FALSE}
 enet <- train(SalePrice ~ ., data = dfTrain6, method = "glmnet", preProcess = c("center", "scale"), tuneLength = 25, trControl = control)
 ```
 Optimizing the elastic net model based on tuning parameters selected from model training.
-```{r}
+```{r, include=FALSE}
 optimized_enet <- glmnet(scaled_training, y_train, alpha = .162, lambda = 0.0289)
 ```
 
-```{r}
+```{r, include=FALSE}
 y_pred_enet <- predict(optimized_enet, xSub)
 y_pred_enet <- data.frame(as.vector(y_pred_enet))
 y_pred_enet$Id <- dfTest6$Id
