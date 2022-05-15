@@ -145,7 +145,7 @@ mult6 <- EHExplore_Multicollinearity(dfTrain4, printHighest=TRUE, threshold=.8, 
 
 ```
 
-Most of the pairs make sense - siding on the first floor will match siding on the sencond floor, the number of cars a garage can hold will be related to its area.  We will address the multicollinearity more closely when we run the analysis.
+Most of the pairs make sense - siding on the first floor will match siding on the second floor, the number of cars a garage can hold will be related to its area.  We will address the multicollinearity more closely when we run the analysis.
 
 ### 2. Transformations
 
