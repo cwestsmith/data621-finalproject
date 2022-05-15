@@ -35,6 +35,8 @@ library(broom)
 
 Being able to accurately predict housing prices is critical to many industries. Recently, analysts have attempted to improve price prediction with enhanced statistical techniques.  In this paper, we take a more comparative approach, examining 6 standard regression techniques (OLS, ridge, lasso, elastic net, random forest and gradient boosting) to assess the best performance.  We used a kaggle dataset (https://www.kaggle.com/c/house-prices-advanced-regression-techniques) in order to test the performance of the model.  We found Lasso to be the best predictor, which we speculate is because the dataset has a high number of predictors relative to the number of observations. 
 
+Keywords: Regression, OLS, Ridge, Lasso, elastic net, random forest, gradient boosting, home prices
+
 ## *Introduction*
 
 In this paper we analyze housing prices by comparing three prediction methodologies: OLS, ridge, lasso, elastic net, random forest and gradient boosting. The purpose is to compare the methodologies and draw conclusions about which are most effective and why. Regression alone is not necessarily the optimal strategy for predicting housing prices.^[1 Li, 2021]  However, when data sets and/or analysis resources are limited, regression can perform adequately.
@@ -406,17 +408,18 @@ Our elastic net result falls between ridge and lasso.
 
 Our final models are Random Forest and Gradient Boosting.
 
-Below is the result from our Random Forest model:
+Below are the top variables for our Gradient Boosting model:
 
 
 ```{r, include=FALSE}
 library(gbm)
 ehboost=gbm(SalePrice ~ . ,data = dfTrain6, distribution = "gaussian",n.trees = 10000,
                   shrinkage = 0.01, interaction.depth = 4)
-ehboost
 
-#summary(ehboost) #Summary gives a table of Variable Importance and a plot of Variable Importance
-
+q <- as.data.frame(summary(ehboost)) #Summary gives a table of Variable Importance and a plot of Variable Importance
+```
+```{r}
+knitr::kable(head(q, 20))
 ```
 
 ```{r}
@@ -439,6 +442,8 @@ makePredictions2(ehboost)
 
 ```
 
+Below is the output from our random forest model:
+
 ```{r, include=FALSE}
 library(randomForest)
 
@@ -447,13 +452,18 @@ ehforest <- randomForest(SalePrice ~ .,
            data = dfTrain6)
 
 # View the forest results.
-print(ehforest) 
-
-# Importance of each predictor.
-#print(importance(fit,type = 2)) 
-
 
 ```
+```{r}
+print(ehforest) 
+
+qqq <- as.data.frame(importance(ehforest,type = 2))
+
+qqq2 <- qqq %>%
+  arrange(desc(qqq))
+
+knitr::kable(head(qqq2, 20))
+
 
 ```{r}
 
@@ -475,7 +485,7 @@ makePredictions2(ehforest)
 
 ```
 
-Our Random Forest model does not improve our score, but Gradient Boosting does.  We land on .12786, which puts us in the 80th percentile.
+The results of our Random Forest model looks very similar to that of our Gradient Boosting, but the model does not improve our score, while Gradient Boosting does.  With Gradient Boosting we land on .12786, which puts us in the 80th percentile.
 
 ## *Discussion and Conclusions*
 
@@ -498,6 +508,8 @@ We used stepAIC to fit our OLS model.  StepAIC uses backward substitution to fin
 Because of the large number of potential predictors, ridge (and by extension elastic net) were not as good candidates as Lasso - however, potential issues with collinearity actually favored ridge.  We found that Lasso improved our score the most of the regression-based models, followed be elastic net (which is a compromise between lasso and ridge), followed by ridge.  All were improvements over OLS - however, the improvements were not dramatic.    
 
 Gradient boosting had the most success. Because gradient boosting is a machine-learning technique in which the model receives direct feedback with each iteration, it can often do a better job of predicting than the other models.  However, if we were looking for insight into the data, GB is something of a "black box" which makes interpretation difficult. 
+
+Our gradient boosting model relied on a few key variables - overall quality, size, number of cars and year built.  The fact that number of cars and size of garage both featured prominently suggests we could have improved the model by eliminating some multicollinearity (the two are highly correlated).
 
 In conclusion, it is important to keep in mind that while regularization improved our model, the base OLS model also performed adequately, so regularization, while important, may in some cases improve models at the margin.  It is also important to recognize the strengths of each of the techniques and use the appropriate one for the situation.
 
