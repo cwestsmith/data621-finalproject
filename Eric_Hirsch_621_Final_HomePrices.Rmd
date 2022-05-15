@@ -37,14 +37,13 @@ Being able to accurately predict housing prices is critical to many industries. 
 
 ## *Introduction*
 
-In this paper we analyze housing prices by comparing three prediction methodologies: OLS, Ridge regression, and Random Forest. The purpose is to compare the methodologies and draw conclusions about which are most effective and why. Regression alone is not necessarily the optimal strategy for predicting housing prices.^[1 Prediction of China's Housing Price Based on a Novel Grey Seasonal Model, Li et al.  Mathematical Models in Engineering, 
-https://www.hindawi.com/journals/mpe/2021/5541233/]  However, when data sets and/or analysis resources are limited, regression can perform adequately.
+In this paper we analyze housing prices by comparing three prediction methodologies: OLS, Ridge regression, and Random Forest. The purpose is to compare the methodologies and draw conclusions about which are most effective and why. Regression alone is not necessarily the optimal strategy for predicting housing prices.^[1 Li, 2021]  However, when data sets and/or analysis resources are limited, regression can perform adequately.
 
 ## *Background and Literature Review*
 
-The ability to accurately predict home prices is of tremendous value to a number of industries, including investors, real estate agents, and municipalities who depend upon property tax revenue. ¹ Predictive models for home prices fall roughly into two kinds.  First, there are those which predict market trends, busts, and booms.  These predictions rely mainly on timeseries data and analysis of housing prices in the aggregate.  The other type of prediction involves the capacity to predict individual house prices from a set of factors.  These usually employ some form of regression and/or machine learning.^[2]
+The ability to accurately predict home prices is of tremendous value to a number of industries, including investors, real estate agents, and municipalities who depend upon property tax revenue. ¹ Predictive models for home prices fall roughly into two kinds.  First, there are those which predict market trends, busts, and booms.  These predictions rely mainly on time series data and analysis of housing prices in the aggregate.  The other type of prediction involves the capacity to predict individual house prices from a set of factors.  These usually employ some form of regression and/or machine learning.^[2 Journal, 2019]
 
-For either sort of prediction, there is no consensus about the best method.  Many researchers have sought to enhance the traditional models with other methodologies.^[3]  For example, Guan et. al. propose a “data stream” approach in which past sale records are treated as an evolving datastream.^[4]   Li et. al. introduce a “grey seasonal model” in which seasonal fluctuations are modeled using grey systems theory, which incorporates uncertainty.^[5]  Alfiyatin, et. el. use particle swarm optimization (PSO) to select independent variables.^[6]  (PSO is an optimization system in which population is initialized with random solutions and searches for optima by updating generations.)  Finally, Liu et.al incorporate both spatial and temporal autocorrelation in their models by analyzing experience-based submarkets by real estate professionals.^[7]
+For either sort of prediction, there is no consensus about the best method.  Many researchers have sought to enhance the traditional models with other methodologies.^[3 Wu, 2020]  For example, Guan et. al. propose a “data stream” approach in which past sale records are treated as an evolving datastream.^[4 Guan, 2021]   Li et. al. introduce a “grey seasonal model” in which seasonal fluctuations are modeled using grey systems theory, which incorporates uncertainty.^[5 Li, 2021]  Alfiyatin, et. el. use particle swarm optimization (PSO) to select independent variables.^[6 Alfiyatin, 2017]  (PSO is an optimization system in which population is initialized with random solutions and searches for optima by updating generations.)  Finally, Liu et.al incorporate both spatial and temporal autocorrelation in their models by analyzing experience-based submarkets by real estate professionals.^[7 Liu, X.  2012]
 
 All of these researchers report that their innovations improve their regression models. Indeed, any real estate agent can tell you that a predictive model can be improved simply by knowing what other houses in the neighborhood sold for.  The problem is, the data at the center of these enhancements is not always available. The researcher may have home sales from only a short time span, and neighborhoods that are not defined by real estate experts but by traditional boundary lines which may contain a mix of house types.  Even when data is available, the complex models proposed may be computationally expensive and/or require data analysis expertise that is not generally available.
 
@@ -422,5 +421,23 @@ We used stepAIC to fit our OLS model.  StepAIC uses backward substitution to fin
 Because of the large number of potential predictors, ridge (and by extension elastic net) were not as good candidates as Lasso - however, potential issues with collinearity actually favored ridge.  We found that Lasso improved our score the most, followed be elastic net (which is a compromise between lasso and ridge), followed by ridge.  All were improvements over OLS - however, the improvements were not dramatic.    
 
 In conclusion, it is important to keep in mind that while regularization improved our model, the base OLS model also performed adequately, so regularization, while important, may in some cases improve models at the margin.  It is also important to recognize the strengths of each of the techniques and use the appropriate one for the situation.
+
+## References
+
+Alfiyatin, A. N. (2017, December 1). *Modeling House Price Prediction using Regression Analysis and Particle Swarm Optimization Case Study : Malang, East Java, Indonesia.* Https://Thesai.Org/. https://thesai.org/Publications/ViewPaper?Volume=8&Issue=10&Code=IJACSA&SerialNo=42
+
+Guan, J. (2021, November 12). *Predicting home sale prices: A review of existing methods and illustration of data stream methods for improved performance.* University of Louisville College of Business.   https://business.louisville.edu/faculty-research/research-publications/predicting-home-sale-prices-a-review-of-existing-methods-and-illustration-of-data-stream-methods-for-improved-performance/
+
+Journal, I. (2019, May 4). *Predicting housing prices using advanced regression techniques.* Ijariit Journal - Academia.Edu. https://www.academia.edu/39014594/Predicting_housing_prices_using_advanced_regression_techniques#:%7E:text=There%20are%20various%20techniques%20for%20predicting%20house%20prices.,have%20an%20impact%20on%20a%20topic%20of%
+
+Kennedy, J. (2014, June 11). *Particle swarm optimization.* Https://Www.Academia.Edu. https://www.academia.edu/1446115/Particle_swarm_optimization
+
+Li, D. (2021, July 3). *Prediction of China’s Housing Price Based on a Novel Grey Seasonal Model.* Www.Hindawi.Com. https://www.hindawi.com/journals/mpe/2021/5541233/
+Liu, S. (2011, September 1). A brief introduction to Grey systems theory. Https://Www.Researchgate.Net.
+
+https://www.researchgate.net/publication/252052256_A_brief_introduction_to_Grey_systems_theory
+Liu, X. (2012, January 14). *Spatial and Temporal Dependence in House Price Prediction.* SpringerLink. https://link.springer.com/article/10.1007/s11146-011-9359-3?error=cookies_not_supported&code=d2a7946f-1472-4dd7-9b57-50d3eba69e24
+
+Wu, Z., et. al.,  (2020, November 5). *Prediction of California House Price Based on Multiple Linear Regression* | Francis Academic Press. Https://Www.Academia.Edu/. https://francis-press.com/papers/2868
 
 
