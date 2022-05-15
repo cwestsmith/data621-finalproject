@@ -1,7 +1,7 @@
 ---
-title: "621_Final_HomeSales"
-author: "Eric Hirsch, Cameron Smith and Carlisle Fergusen"
-date: "4/7/2022"
+title: "Comparing Models for the Prediction of Home Prices"
+author: "Eric Hirsch, Carlisle Fergusen, and Cameron Smith"
+date: "5/15/2022"
 output:
   pdf_document:
     toc: true
@@ -33,26 +33,26 @@ library(broom)
 
 ## *Abstract*
 
-Being able to accurately predict housing prices is critical to many industries. Recently, analysts have attempted to improve price prediction with enhanced statistical techniques.  In this paper, we take a more comparative approach, examining 4 standard regression techniques (OLS, ridge lasso, and elastic net) to assess the best performance.  We used a kaggle dataset (https://www.kaggle.com/c/house-prices-advanced-regression-techniques) in order to test the performance of the model.  We found Lasso to be the best predictor, which we speculate is because the dataset has a high number of predictors relative to the number of observations. 
+Being able to accurately predict housing prices is critical to many industries. Recently, analysts have attempted to improve price prediction with enhanced statistical techniques.  In this paper, we take a more comparative approach, examining 6 standard regression techniques (OLS, ridge, lasso, elastic net, random forest and gradient boosting) to assess the best performance.  We used a kaggle dataset (https://www.kaggle.com/c/house-prices-advanced-regression-techniques) in order to test the performance of the model.  We found Lasso to be the best predictor, which we speculate is because the dataset has a high number of predictors relative to the number of observations. 
 
 ## *Introduction*
 
-In this paper we analyze housing prices by comparing three prediction methodologies: OLS, Ridge regression, and Random Forest. The purpose is to compare the methodologies and draw conclusions about which are most effective and why. Regression alone is not necessarily the optimal strategy for predicting housing prices.^[1 Li, 2021]  However, when data sets and/or analysis resources are limited, regression can perform adequately.
+In this paper we analyze housing prices by comparing three prediction methodologies: OLS, ridge, lasso, elastic net, random forest and gradient boosting. The purpose is to compare the methodologies and draw conclusions about which are most effective and why. Regression alone is not necessarily the optimal strategy for predicting housing prices.^[1 Li, 2021]  However, when data sets and/or analysis resources are limited, regression can perform adequately.
 
 ## *Background and Literature Review*
 
-The ability to accurately predict home prices is of tremendous value to a number of industries, including investors, real estate agents, and municipalities who depend upon property tax revenue. ¹ Predictive models for home prices fall roughly into two kinds.  First, there are those which predict market trends, busts, and booms.  These predictions rely mainly on time series data and analysis of housing prices in the aggregate.  The other type of prediction involves the capacity to predict individual house prices from a set of factors.  These usually employ some form of regression and/or machine learning.^[2 Journal, 2019]
+The ability to accurately predict home prices is of tremendous value to a number of industries, including investors, real estate agents, and municipalities who depend upon property tax revenue. Predictive models for home prices fall roughly into two kinds.  First, there are those which predict market trends, busts, and booms.  These predictions rely mainly on time series data and analysis of housing prices in the aggregate.  The other type of prediction involves the capacity to predict individual house prices from a set of factors.  These usually employ some form of regression and/or machine learning.^[2 Journal, 2019]
 
-For either sort of prediction, there is no consensus about the best method.  Many researchers have sought to enhance the traditional models with other methodologies.^[3 Wu, 2020]  For example, Guan et. al. propose a “data stream” approach in which past sale records are treated as an evolving datastream.^[4 Guan, 2021]   Li et. al. introduce a “grey seasonal model” in which seasonal fluctuations are modeled using grey systems theory, which incorporates uncertainty.^[5 Li, 2021]  Alfiyatin, et. el. use particle swarm optimization (PSO) to select independent variables.^[6 Alfiyatin, 2017]  (PSO is an optimization system in which population is initialized with random solutions and searches for optima by updating generations.)  Finally, Liu et.al incorporate both spatial and temporal autocorrelation in their models by analyzing experience-based submarkets by real estate professionals.^[7 Liu, X.  2012]
+For either sort of prediction, there is no consensus about the best method.  Many researchers have sought to enhance the traditional models with other methodologies.^[3 Wu, 2020]  For example, Guan et. al. propose a “data stream” approach in which past sale records are treated as an evolving datastream.^[4 Guan, 2021]   Li et. al. introduce a “grey seasonal model” in which seasonal fluctuations are modeled using grey systems theory, which incorporates uncertainty.^[5 Li, 2021]  Alfiyatin, et. el. use particle swarm optimization (PSO) to select independent variables.^[6 Alfiyatin, 2017]  (PSO is an optimization system in which population is initialized with random solutions and searches for optima by updating generations.)  Finally, Liu et.al incorporate both spatial and temporal autocorrelation in their models by analyzing experience-based submarkets identified by real estate professionals.^[7 Liu, X.  2012]
 
 All of these researchers report that their innovations improve their regression models. Indeed, any real estate agent can tell you that a predictive model can be improved simply by knowing what other houses in the neighborhood sold for.  The problem is, the data at the center of these enhancements is not always available. The researcher may have home sales from only a short time span, and neighborhoods that are not defined by real estate experts but by traditional boundary lines which may contain a mix of house types.  Even when data is available, the complex models proposed may be computationally expensive and/or require data analysis expertise that is not generally available.
 
-In this project we approach the question comparatively. Restricting ourselves to regression models, we compare three types of regression: OLS, Ridge, and Random Forest. At the data is drawn from the Advanced Regression Techniques housing data set for Ames, Iowa. We test the accuracy of our models by submitting each to the Kaggle competition to see how they perform.  We then discussed the merits of the different sorts of approaches.
+In this project we approach the question comparatively. Restricting ourselves to regression models, we compare six types of regression: OLS, ridge, lasso, elastic net, random forest and gradient boosting. The data is drawn from the Advanced Regression Techniques housing data set for Ames, Iowa. We test the accuracy of our models by submitting each to the Kaggle competition to see how they perform.  We then discuss the merits of the different sorts of approaches.
 
 
 ## *Modeling*
 
-We are modeling a data set containing 1460 records of houses sold in the Ames, Iowa area between 2006 and 2010.  The variables are mostly related to house features, such as square footage, the presense of a pool, etc. The response variable, "SalePrice", is a continuous variable representing the sale price of the house in dollars.  
+We are modeling a data set containing 1460 records of houses sold in the Ames, Iowa area between 2006 and 2010.  The variables are mostly related to house features, such as square footage, the presence of a pool, etc. The response variable, "SalePrice", is a continuous variable representing the sale price of the house in thousands of dollars.  
 
 We examine the data:
 
@@ -178,7 +178,8 @@ A number of histograms suggest issues with some of the independent variables.
 dfLook <- dfTrain5 %>%
   dplyr::select(LotArea, YearBuilt, YearRemodAdd, MasVnrArea, BsmtFinSF1, X1stFlrSF, GrLivArea, GarageYrBlt, WoodDeckSF, OpenPorchSF)
 
-EHSummarize_SingleColumn_Histograms(dfLook)
+qq <- EHSummarize_SingleColumn_Histograms(dfLook)
+grid.arrange(grobs=qq[c(1:10)], ncol=5)
 
 ```
 
@@ -187,26 +188,26 @@ We can see some transformations might be useful.  We:
 1. Add a dummy variable to mark YearBuilt before and after 1920
 2. We set YearRemodAdd = 1950 to 0, and create a dummy variable YearRemodUnknown to track it
 3. We add dummies for NoFinBsmt, HasDeck, and HasPorch
-4. We eliminate outliers by setting LotArea<35000, GrLivArea3500 and BsmtFinSF1<4000
+4. We eliminate outliers by setting GrLivArea<4000
 
 ```{r}
 dfTrain6 <- dfTrain5 %>%
   dplyr::mutate(BuiltAfter1920 = ifelse(YearBuilt>1920,1,0), YearRemodUnknown = ifelse(YearRemodAdd==1950,1,0), NoFinBsmt = ifelse(BsmtFinSF1==0,1,0), YearRemodAdd = ifelse(YearRemodAdd==1950,0,YearRemodAdd), HasDeck = ifelse(WoodDeckSF!=0,1,0), HasPorch = ifelse(OpenPorchSF!=0,1,0)) %>%
-  dplyr::filter(LotArea<35000, GrLivArea<3500, BsmtFinSF1<4000)
+  dplyr::filter(GrLivArea<4000)
 
 dfTest6 <- dfTest5 %>%
-  dplyr::mutate(BuiltAfter1920 = ifelse(YearBuilt>1920,1,0), YearRemodUnknown = ifelse(YearRemodAdd==1950,1,0), NoFinBsmt = ifelse(BsmtFinSF1==0,1,0), YearRemodAdd = ifelse(YearRemodAdd==1950,0,YearRemodAdd), HasDeck = ifelse(WoodDeckSF!=0,1,0), HasPorch = ifelse(OpenPorchSF!=0,1,0)) 
+  dplyr::mutate(BuiltAfter1920 = ifelse(YearBuilt>1920,1,0), YearRemodUnknown = ifelse(YearRemodAdd==1950,1,0), NoFinBsmt = ifelse(BsmtFinSF1==0,1,0), YearRemodAdd = ifelse(YearRemodAdd==1950,0,YearRemodAdd), HasDeck = ifelse(WoodDeckSF!=0,1,0), HasPorch = ifelse(OpenPorchSF!=0,1,0))
 ```
 
 ### 3. Model and Predict:
 
 #### A. Base Model
-We run a regression using the stepAIC algorithm to minimize AIC.
+We run an OLS regression using the stepAIC algorithm to minimize AIC.
 
 ```{r}
 
-#abc <- EHModel_Regression_StandardLM(dfTrain6, "SalePrice", splitRatio = 1, returnLM=TRUE)
-abc <- lm(SalePrice ~ GrLivArea, dfTrain6)
+abc <- EHModel_Regression_StandardLM(dfTrain6, "SalePrice", splitRatio = 1, returnLM=TRUE)
+#abc <- lm(SalePrice ~ GrLivArea, dfTrain6)
 summary(abc)
 
 ```
@@ -224,16 +225,16 @@ predictions[,c(1,2)] <- predictions[,c(2,1)]
 colnames(predictions) <- c("Id", "SalePrice")
 predictions[is.na(predictions)] <- log(mean(dfTrain$SalePrice))
 predictions$SalePrice <- exp(predictions$SalePrice)
-#write_csv(predictions, "C:\\Users\\eric.hirsch\\Desktop\\predictionsABCLess.csv")
-write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsABC.csv")
+write_csv(predictions, "C:\\Users\\Eric\\Desktop\\predictionsABCLess.csv")
+#write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsABC.csv")
 }
 
 makePredictions2(abc)
 
 ```
-We achieve a score of .14586 on kaggle.
+We achieve a score of .14586 on kaggle.  This puts us in the 60th percentile.
 
-#### B. Now we try Ridge regression:
+#### B. Ridge regression:
 
 ```{r}
 
@@ -252,7 +253,7 @@ xSub <- data.matrix(dfSubmit7a)
 model <- glmnet(x, y, alpha = 0)
 ```
 
-R makes it easy to find the best lambda by using kfold validation:
+R makes it easy to find the best lambda by using kfold validation.  Below are the results of our ridge regression analysis. Unlike stepAIC, ridge regression will retain all of the variables. 
 
 ```{r}
 
@@ -293,31 +294,26 @@ write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsRidge2.csv")
 
 ```
 
-Ridge regression performs the best, with a score of .14047.  This puts us at 1690 out of 4216 individuals.
+Despite the large number of independent variables, ridge regression performs better, with a score of .14047.  This puts us at 1690 out of 4216 individuals.
 
 #### C. Lasso Regression
 
-##### Lasso Regression with Unscaled Data
+To perform Lasso regression, first we define the predictor and response variables for the training dataset.  Similarly to the Ridge model, we'll use the `glmnet` library, which makes it easy to use k-fold cross-validation to find the optimal value for lambda. Next, we find the coefficients for the Lasso model using our optimized lambda.  Lastly, we predict new values using our optimized Lasso model.  Here is our lambda:
 
-First we define the predictor and response variables for the training dataset.
 ```{r}
 y_train <- dfTrain6$SalePrice
 x_train <- data.matrix(dfTrain6[, names(dfTrain6) != "SalePrice"])
 ```
 
-Similarly to the Ridge model, we'll use the `glmnet` library, which makes it easy to use k-fold cross-validation to find the optimal value for lambda.
 ```{r, include=FALSE}
 lasso_cv <- cv.glmnet(x_train, y_train, alpha = 1)
 
 lasso_lambda <- lasso_cv$lambda.min; lasso_lambda
 ```
-Next, we find the coefficients for the Lasso model using our optimized lambda.
 
 ```{r, include=FALSE}
 optimized_lasso <- glmnet(x_train, y_train, alpha = 1, lambda = lasso_lambda)
 ```
-
-Lastly, we predict new values using our optimized Lasso model.
 
 ```{r, include=FALSE}
 lasso_testdata <- data.matrix(dfTest6)
@@ -336,9 +332,8 @@ y_pred_lasso$SalePrice <- exp(y_pred_lasso$SalePrice)
 #write.csv(y_pred_lasso, "C:\\Users\\carli\\OneDrive\\Documents\\621\\LassoPredictions.csv")
 ```
 
-##### Lasso Regression with Scaled Data
-
 ```{r}
+# Lasso Regression with Scaled Data
 scaled_training <- data.matrix(df7b)
 ```
 
@@ -369,22 +364,25 @@ y_pred_lasso2$SalePrice <- exp(y_pred_lasso2$SalePrice)
 #write.csv(y_pred_lasso2, "C:\\Users\\carli\\OneDrive\\Documents\\621\\LassoPredictions2.csv")
 ```
 
-Our lasso regression gives us a .1375, which outperforms ridge.
+We try Lasso with both scaled and unscaled data. Because lasso incorporates a penalty based on the size of the coefficients, we expect the scaled data to perform better, and it does.  Our lasso regression gives us a .1375, which outperforms ridge.
 
 #### D. Elastic Net Regression
+In order to form elastic net, first, build a control model. Next, train the elastic net regression model.  Then we optimize the elastic net model based on tuning parameters selected from model training.
+
 ```{r, include=FALSE}
 library(caret)
 library(dplyr)
 ```
-First, build a control model.
+
 ```{r, include=FALSE}
 control <- trainControl(method = "repeatedcv", number = 5, repeats = 5, search = "random", verboseIter = TRUE)
 ```
-Next, train the elastic net regression model.
+
 ```{r, include=FALSE}
 enet <- train(SalePrice ~ ., data = dfTrain6, method = "glmnet", preProcess = c("center", "scale"), tuneLength = 25, trControl = control)
 ```
-Optimizing the elastic net model based on tuning parameters selected from model training.
+
+
 ```{r, include=FALSE}
 optimized_enet <- glmnet(scaled_training, y_train, alpha = .162, lambda = 0.0289)
 ```
@@ -404,6 +402,81 @@ y_pred_enet$SalePrice <- exp(y_pred_enet$SalePrice)
 
 Our elastic net result falls between ridge and lasso.
 
+#### E. Tree based models: Random Forest and Gradient Boosting
+
+Our final models are Random Forest and Gradient Boosting.
+
+Below is the result from our Random Forest model:
+
+
+```{r, include=FALSE}
+library(gbm)
+ehboost=gbm(SalePrice ~ . ,data = dfTrain6, distribution = "gaussian",n.trees = 10000,
+                  shrinkage = 0.01, interaction.depth = 4)
+ehboost
+
+#summary(ehboost) #Summary gives a table of Variable Importance and a plot of Variable Importance
+
+```
+
+```{r}
+
+
+makePredictions2 <- function(df)
+{
+predictions <- predict(df,newdata=dfTest6)
+predictions <- data.frame(as.vector(predictions))
+predictions$Id <- dfTest6$Id
+predictions[,c(1,2)] <- predictions[,c(2,1)]
+colnames(predictions) <- c("Id", "SalePrice")
+predictions[is.na(predictions)] <- log(mean(dfTrain$SalePrice))
+predictions$SalePrice <- exp(predictions$SalePrice)
+write_csv(predictions, "C:\\Users\\Eric\\Desktop\\predictionsBoost.csv")
+#write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsABC.csv")
+}
+
+makePredictions2(ehboost)
+
+```
+
+```{r, include=FALSE}
+library(randomForest)
+
+# Create the forest.
+ehforest <- randomForest(SalePrice ~ ., 
+           data = dfTrain6)
+
+# View the forest results.
+print(ehforest) 
+
+# Importance of each predictor.
+#print(importance(fit,type = 2)) 
+
+
+```
+
+```{r}
+
+
+makePredictions2 <- function(df)
+{
+predictions <- predict(df,newdata=dfTest6)
+predictions <- data.frame(as.vector(predictions))
+predictions$Id <- dfTest6$Id
+predictions[,c(1,2)] <- predictions[,c(2,1)]
+colnames(predictions) <- c("Id", "SalePrice")
+predictions[is.na(predictions)] <- log(mean(dfTrain$SalePrice))
+predictions$SalePrice <- exp(predictions$SalePrice)
+write_csv(predictions, "C:\\Users\\Eric\\Desktop\\predictionsForest.csv")
+#write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsABC.csv")
+}
+
+makePredictions2(ehforest)
+
+```
+
+Our Random Forest model does not improve our score, but Gradient Boosting does.  We land on .12786, which puts us in the 80th percentile.
+
 ## *Discussion and Conclusions*
 
 Ordinary Least Squares is a regression technique with a long history of use as a predictive model. However, standard measures of fit (like R^2) will always increase (or stay the same) as you add independent variables.  This can result in models which incorporate noise - in other words, overfit the data so that idiosyncrasies in the training set affect predictions in the test set.  Other methods of measuring fit, such as adjusted R^2 and AIC, help mitigate the overfitting effect by penalizing the addition of factors.
@@ -414,11 +487,17 @@ Ridge regression will keep all the variables but may significantly reduce the co
 
 Elastic Net regression is a hybrid approach that blends both of the penalizations of lasso and ridge methods.  An alpha parameter weights which penalty to emphasize - lasso or ridge.
 
+Random Forest (RF) and Gradient Boosting (GB) both rely on decision trees.  Decision trees incorporate sequential choice-point steps, providing different outcomes for each choice-point. Decision trees have the advantage that they do not make assumptions that the dependent variable is linearly related to the independent variables.  In addition, RF and GB both combine multiple trees so the results are averages of many samples, which improves their predictability.  However, the results may be difficut to interpret.
+
+RF and BG handle the combination of trees differently. RF builds each tree independently and averages at the end.  BG proceeds in a stage-wise manner, improving the performance of weak learners as you go.  This can result in better performance.
+
 Our dataset has features that lend to overfitting. Most significant of these is the high number of potential independent variables (over 200 once the dummy variables are created.)  Multicollinearity is also a problem, though less than we might have expected. 
 
 We used stepAIC to fit our OLS model.  StepAIC uses backward substitution to find the best model with the lowest AIC.  With an adjusted R^2 of over 90% overfitting was expected.  However, even with an overfit model our predictions performed at the 60th percentile on the Kaggle.
 
-Because of the large number of potential predictors, ridge (and by extension elastic net) were not as good candidates as Lasso - however, potential issues with collinearity actually favored ridge.  We found that Lasso improved our score the most, followed be elastic net (which is a compromise between lasso and ridge), followed by ridge.  All were improvements over OLS - however, the improvements were not dramatic.    
+Because of the large number of potential predictors, ridge (and by extension elastic net) were not as good candidates as Lasso - however, potential issues with collinearity actually favored ridge.  We found that Lasso improved our score the most of the regression-based models, followed be elastic net (which is a compromise between lasso and ridge), followed by ridge.  All were improvements over OLS - however, the improvements were not dramatic.    
+
+Gradient boosting had the most success. Because gradient boosting is a machine-learning technique in which the model receives direct feedback with each iteration, it can often do a better job of predicting than the other models.  However, if we were looking for insight into the data, GB is something of a "black box" which makes interpretation difficult. 
 
 In conclusion, it is important to keep in mind that while regularization improved our model, the base OLS model also performed adequately, so regularization, while important, may in some cases improve models at the margin.  It is also important to recognize the strengths of each of the techniques and use the appropriate one for the situation.
 
