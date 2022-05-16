@@ -42,17 +42,18 @@ set.seed(1234)
 Being able to accurately predict housing prices is critical to many
 industries. Recently, analysts have attempted to improve price
 prediction with enhanced statistical techniques. In this paper, we take
-a more comparative approach, examining 6 standard regression techniques
-(OLS, ridge, lasso, elastic net, random forest and gradient boosting) to
-assess the best performance. We used a kaggle dataset
+a more comparative approach, examining 7 standard regression techniques
+(OLS, ridge, lasso, elastic net, decision tree, random forest and
+gradient boosting) to assess the best performance. We used a kaggle data
+set
 (<https://www.kaggle.com/c/house-prices-advanced-regression-techniques>)
 in order to test the performance of the model. We found Lasso to be the
-best predictor, which we speculate is because the dataset has a high
+best predictor, which we speculate is because the data set has a high
 number of predictors relative to the number of observations.
 
 ## *Introduction*
 
-In this paper we analyze housing prices by comparing three prediction
+In this paper we analyze housing prices by comparing multiple prediction
 methodologies: OLS, ridge, lasso, elastic net, random forest and
 gradient boosting. The purpose is to compare the methodologies and draw
 conclusions about which are most effective and why. Regression alone is
@@ -112,12 +113,13 @@ complex models proposed may be computationally expensive and/or require
 data analysis expertise that is not generally available.
 
 In this project we approach the question comparatively. Restricting
-ourselves to regression models, we compare six types of regression: OLS,
-ridge, lasso, elastic net, random forest and gradient boosting. The data
-is drawn from the Advanced Regression Techniques housing data set for
-Ames, Iowa. We test the accuracy of our models by submitting each to the
-Kaggle competition to see how they perform. We then discuss the merits
-of the different sorts of approaches.
+ourselves to regression models, we compare seven types of regression:
+OLS, ridge, lasso, elastic net, decision tree, random forest and
+gradient boosting. The data is drawn from the Advanced Regression
+Techniques housing data set for Ames, Iowa. We test the accuracy of our
+models by submitting each to the Kaggle competition to see how they
+perform. We then discuss the merits of the different sorts of
+approaches.
 
 ## *Modeling*
 
@@ -137,7 +139,7 @@ dfTest <- read.csv("https://raw.githubusercontent.com/ericonsi/CUNY_621/main/Fin
 
 ```
 
-### 1. Dataset Description
+### 1. Data Set Description
 
 #### A. Summary Statistics
 
@@ -146,14 +148,14 @@ summary(dfTrain)
 str(dfTrain)
 ```
 
-The dataset consists of 1460 observations and 81 variables, some numeric
-and some categorical. The target variable has a minimum of 34,950 and a
-maximum of 7,550,000. The low median compared to the mean suggests some
-skew.
+The data set consists of 1460 observations and 81 variables, some
+numeric and some categorical. The target variable has a minimum of
+34,950 and a maximum of 7,550,000. The low median compared to the mean
+suggests some skew.
 
 #### B. Missing values
 
-There are missing values scattered throughout the dataset. We analyse
+There are missing values scattered throughout the data set. We analyse
 them:
 
 ```{r}
@@ -204,8 +206,8 @@ dfTest3 <- EHPrepare_CreateDummies(dfTest2)
 
 #### D. Reconcile training and test sets
 
-We check if the dataset is missing columns from the test dataset and if
-so, drop them from the training set. This way we don't risk making
+We check if the data set is missing columns from the test data set and
+if so, drop them from the training set. This way we don't risk making
 predictions on training set variables not found in the test set.
 
 ```{r}
@@ -218,8 +220,8 @@ dfTest4  <- g[[2]]
 
 #### E. Multicollinearity
 
-We examine multicollinearity in the dataset. We look at all of the pairs
-of correlations over .8 There are 24 pairs.
+We examine multicollinearity in the data set. We look at all of the
+pairs of correlations over .8 There are 24 pairs.
 
 ```{r}
 
@@ -323,7 +325,7 @@ makePredictions2(abc)
 We achieve a score of .14586 on kaggle. This puts us in the 60th
 percentile.
 
-#### B. Ridge regression:
+#### B. Ridge Regression:
 
 ```{r}
 
@@ -391,7 +393,7 @@ performs better, with a score of .14047. This puts us at 1690 out of
 #### C. Lasso Regression
 
 To perform Lasso regression, first we define the predictor and response
-variables for the training dataset. Similarly to the Ridge model, we'll
+variables for the training data set. Similarly to the Ridge model, we'll
 use the `glmnet` library, which makes it easy to use k-fold
 cross-validation to find the optimal value for lambda. Next, we find the
 coefficients for the Lasso model using our optimized lambda. Lastly, we
@@ -510,9 +512,9 @@ y_pred_enet$SalePrice <- exp(y_pred_enet$SalePrice)
 
 Our elastic net result falls between ridge and lasso.
 
-#### **E. Basic Decision Tree**
+#### **E. Decision Tree**
 
-After Elastic Net we tried a Basic Decision Tree model. It scored
+After Elastic Net we tried a basic Decision Tree model. It scored
 0.22422 so clearly not as good of a model as those previously used,
 including our base model.
 
@@ -520,6 +522,7 @@ including our base model.
 # Using a basic regression tree via the rpart() function
 # Load package
 library(rpart)
+library(rpart.plot)
 
 # Build the model
 modelE <- rpart(SalePrice ~ ., data = dfTrain6)
@@ -528,8 +531,7 @@ modelE <- rpart(SalePrice ~ ., data = dfTrain6)
 printcp(modelE)
 
 # Plot the decision tree
-plot(modelE, uniform = TRUE)
-text(modelE, cex = 0.6)
+rpart.plot(modelE)
 ```
 
 ```{r}
@@ -660,9 +662,9 @@ discussed below, incorporate sequential choice-point steps, providing
 different outcomes for each choice-point. Decision trees have the
 advantage that they do not make assumptions that the dependent variable
 is linearly related to the independent variables. They can also be
-graphically represented, as has been done with the Basic Decision Tree
-above, to help users more easily interpret the model and understand the
-basic decisions made as part of the supervised learning process.
+graphically represented, as has been done with the Decision Tree above,
+to help users more easily interpret the model and understand the basic
+decisions made as part of the supervised learning process.
 
 Random Forest (RF) and Gradient Boosting (GB) both combine multiple
 trees so the results are averages of many samples, which improves their
@@ -672,7 +674,7 @@ independently and averages at the end. BG proceeds in a stage-wise
 manner, improving the performance of weak learners as you go. This can
 result in better performance.
 
-Our dataset has features that lend to overfitting. Most significant of
+Our data set has features that lend to overfitting. Most significant of
 these is the high number of potential independent variables (over 200
 once the dummy variables are created.) Multicollinearity is also a
 problem, though less than we might have expected.
