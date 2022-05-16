@@ -1,6 +1,6 @@
 ---
 title: "Comparing Models for the Prediction of Home Prices"
-author: "Eric Hirsch, Carlisle Fergusen, and Cameron Smith"
+author: "Eric Hirsch, Carlisle Ferguson, and Cameron Smith"
 date: "5/15/2022"
 output:
   pdf_document:
