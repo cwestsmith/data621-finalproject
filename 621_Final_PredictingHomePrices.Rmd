@@ -29,6 +29,8 @@ library(mltools)
 library(psych)
 library(MASS)
 library(broom)
+library(rpart)
+library(rpart.plot)
 ```
 
 ## *Abstract*
@@ -413,8 +415,7 @@ including our base model.
 ```{r}
 # Using a basic regression tree via the rpart() function
 # Load package
-library(rpart)
-library(rpart.plot)
+
 
 # Build the model
 modelE <- rpart(SalePrice ~ ., data = dfTrain6)
