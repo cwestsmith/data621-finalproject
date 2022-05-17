@@ -227,7 +227,7 @@ predictions[,c(1,2)] <- predictions[,c(2,1)]
 colnames(predictions) <- c("Id", "SalePrice")
 predictions[is.na(predictions)] <- log(mean(dfTrain$SalePrice))
 predictions$SalePrice <- exp(predictions$SalePrice)
-write_csv(predictions, "C:\\Users\\Eric\\Desktop\\predictionsABCLess.csv")
+#write_csv(predictions, "C:\\Users\\Eric\\Desktop\\predictionsABCLess.csv")
 #write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsABC.csv")
 }
 
@@ -292,7 +292,7 @@ predictions[,c(1,2)] <- predictions[,c(2,1)]
 colnames(predictions) <- c("Id", "SalePrice")
 predictions[is.na(predictions)] <- log(mean(dfTrain$SalePrice))
 predictions$SalePrice <- exp(predictions$SalePrice)
-write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsRidge2.csv")
+#write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsRidge2.csv")
 
 ```
 
@@ -472,7 +472,7 @@ predictions[,c(1,2)] <- predictions[,c(2,1)]
 colnames(predictions) <- c("Id", "SalePrice")
 predictions[is.na(predictions)] <- log(mean(dfTrain$SalePrice))
 predictions$SalePrice <- exp(predictions$SalePrice)
-write_csv(predictions, "C:\\Users\\Eric\\Desktop\\predictionsBoost.csv")
+#write_csv(predictions, "C:\\Users\\Eric\\Desktop\\predictionsBoost.csv")
 #write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsABC.csv")
 }
 
@@ -515,7 +515,7 @@ predictions[,c(1,2)] <- predictions[,c(2,1)]
 colnames(predictions) <- c("Id", "SalePrice")
 predictions[is.na(predictions)] <- log(mean(dfTrain$SalePrice))
 predictions$SalePrice <- exp(predictions$SalePrice)
-write_csv(predictions, "C:\\Users\\Eric\\Desktop\\predictionsForest.csv")
+#write_csv(predictions, "C:\\Users\\Eric\\Desktop\\predictionsForest.csv")
 #write_csv(predictions, "D:\\RStudio\\CUNY_621\\Final\\predictionsABC.csv")
 }
 
