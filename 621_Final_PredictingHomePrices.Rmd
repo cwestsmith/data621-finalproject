@@ -33,13 +33,13 @@ library(broom)
 
 ## *Abstract*
 
-Being able to accurately predict housing prices is critical to many industries. Recently, analysts have attempted to improve price prediction with enhanced statistical techniques.  In this paper, we take a more comparative approach, examining  standard regression techniques (OLS, ridge, lasso, elastic net, simple decision tree, random forest and gradient boosting) to assess the best performance.  We used a kaggle dataset (https://www.kaggle.com/c/house-prices-advanced-regression-techniques) in order to test the performance of the model.  We found Lasso to be the best predictor, which we speculate is because the dataset has a high number of predictors relative to the number of observations. 
+Being able to accurately predict housing prices is critical to many industries. Recently, analysts have attempted to improve price prediction with enhanced statistical techniques.  In this paper, we take a more comparative approach, examining 7 regression techniques (OLS, ridge, lasso, elastic net, simple decision tree, random forest and gradient boosting) to assess the best performance.  We used a kaggle dataset (https://www.kaggle.com/c/house-prices-advanced-regression-techniques) in order to test the performance of the model.  We found gradient boosting to be the best predictor, as is often the case because of the machine-learning algorithm at the heart of gradient boosting.  Lasso was the best non-tree predictor, which we speculate is because the dataset has a high number of predictors relative to the number of observations. 
 
 Keywords: Regression, OLS, Ridge, Lasso, elastic net, random forest, gradient boosting, home prices
 
 ## *Introduction*
 
-In this paper we analyze housing prices by comparing various prediction methodologies: OLS, ridge, lasso, elastic net, smpe decsion tree, random forest and gradient boosting. The purpose is to compare the methodologies and draw conclusions about which are most effective and why. Regression alone is not necessarily the optimal strategy for predicting housing prices.^[1 Li, 2021]  However, when data sets and/or analysis resources are limited, regression can perform adequately.
+In this paper we analyze housing prices by comparing various prediction methodologies: OLS, ridge, lasso, elastic net, simple decision tree, random forest and gradient boosting. The purpose is to compare the methodologies and draw conclusions about which are most effective and why. Regression alone is not necessarily the optimal strategy for predicting housing prices.^[1 Li, 2021]  However, when data sets and/or analysis resources are limited, regression can perform adequately.
 
 ## *Background and Literature Review*
 
@@ -49,7 +49,7 @@ For either sort of prediction, there is no consensus about the best method.  Man
 
 All of these researchers report that their innovations improve their regression models. Indeed, any real estate agent can tell you that a predictive model can be improved simply by knowing what other houses in the neighborhood sold for.  The problem is, the data at the center of these enhancements is not always available. The researcher may have home sales from only a short time span, and neighborhoods that are not defined by real estate experts but by traditional boundary lines which may contain a mix of house types.  Even when data is available, the complex models proposed may be computationally expensive and/or require data analysis expertise that is not generally available.
 
-In this project we approach the question comparatively. Restricting ourselves to regression models, we compare six types of regression: OLS, ridge, lasso, elastic net, random forest and gradient boosting. The data is drawn from the Advanced Regression Techniques housing data set for Ames, Iowa. We test the accuracy of our models by submitting each to the Kaggle competition to see how they perform.  We then discuss the merits of the different sorts of approaches.
+In this project we approach the question comparatively. Restricting ourselves to regression models, we compare seven types of regression: OLS, ridge, lasso, elastic net, decision tree, random forest and gradient boosting. The data is drawn from the Advanced Regression Techniques housing data set for Ames, Iowa. We test the accuracy of our models by submitting each to the Kaggle competition to see how they perform.  We then discuss the merits of the different sorts of approaches.
 
 
 ## *Modeling*
@@ -404,9 +404,9 @@ y_pred_enet$SalePrice <- exp(y_pred_enet$SalePrice)
 
 Our elastic net result falls between ridge and lasso.
 
-#### *E. Basic Decision Tree*
+#### E. Basic Decision Tree
 
-After Elastic Net we tried a Basic Decision Tree model. It scored
+After Elastic Net we tried a basic Decision Tree model. It scored
 0.22422 so clearly not as good of a model as those previously used,
 including our base model.
 
@@ -414,6 +414,7 @@ including our base model.
 # Using a basic regression tree via the rpart() function
 # Load package
 library(rpart)
+library(rpart.plot)
 
 # Build the model
 modelE <- rpart(SalePrice ~ ., data = dfTrain6)
@@ -422,9 +423,9 @@ modelE <- rpart(SalePrice ~ ., data = dfTrain6)
 printcp(modelE)
 
 # Plot the decision tree
-plot(modelE, uniform = TRUE)
-text(modelE, cex = 0.6)
+rpart.plot(modelE)
 ```
+
 
 ```{r}
 # Make predictions
@@ -443,7 +444,7 @@ modelEpreds$SalePrice <- exp(modelEpreds$SalePrice)
 
 #### F. Other tree-based models: Random Forest and Gradient Boosting
 
-Our final models are Random Forest and Gradient Boosting, which also ake use of decision trees.
+Our final models are Random Forest and Gradient Boosting, which also make use of decision trees.
 
 Below are the top variables for our Gradient Boosting model:
 
@@ -534,11 +535,9 @@ Ridge regression will keep all the variables but may significantly reduce the co
 
 Elastic Net regression is a hybrid approach that blends both of the penalizations of lasso and ridge methods.  An alpha parameter weights which penalty to emphasize - lasso or ridge.
 
-Decision trees, including Random Forest and Gradient Boosting as discussed below, incorporate sequential choice-point steps, providing different outcomes for each choice-point. Decision trees have the advantage that they do not make assumptions that the dependent variable
-is linearly related to the independent variables. They can also be graphically represented, as has been done with the Basic Decision Tree above, to help users more easily interpret the model and understand the basic decisions made as part of the supervised learning process.
+Decision trees, including Random Forest and Gradient Boosting as discussed below, incorporate sequential choice-point steps, providing different outcomes for each choice-point. Decision trees have the advantage that they do not make assumptions that the dependent variable is linearly related to the independent variables. They can also be graphically represented, as has been done with the Basic Decision Tree above, to help users more easily interpret the model and understand the basic decisions made as part of the supervised learning process.
 
-Random Forest (RF) and Gradient Boosting (GB) both combine multiple trees so the results are averages of many samples, which improves their predictability. However, the results may be difficult to interpret. RF and GB handle the combination of trees differently. RF builds each tree
-independently and averages at the end. BG proceeds in a stage-wise manner, improving the performance of weak learners as you go. This can result in better performance.
+Random Forest (RF) and Gradient Boosting (GB) both combine multiple trees so the results are averages of many samples, which improves their predictability. However, the results may be difficult to interpret. RF and GB handle the combination of trees differently. RF builds each tree independently and averages at the end. BG proceeds in a stage-wise manner, improving the performance of weak learners as you go. This can result in better performance.
 
 RF and BG handle the combination of trees differently. RF builds each tree independently and averages at the end.  BG proceeds in a stage-wise manner, improving the performance of weak learners as you go.  This can result in better performance.
 
@@ -554,7 +553,7 @@ Our gradient boosting model relied on a few key variables - overall quality, siz
 
 In conclusion, it is important to keep in mind that while regularization improved our model, the base OLS model also performed adequately, so regularization, while important, may in some cases improve models at the margin.  It is also important to recognize the strengths of each of the techniques and use the appropriate one for the situation.
 
-## References
+## *References*
 
 Alfiyatin, A. N. (2017, December 1). *Modeling House Price Prediction using Regression Analysis and Particle Swarm Optimization Case Study : Malang, East Java, Indonesia.* Https://Thesai.Org/. https://thesai.org/Publications/ViewPaper?Volume=8&Issue=10&Code=IJACSA&SerialNo=42
 
